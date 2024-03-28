@@ -1,6 +1,6 @@
 #let minutes-to-datetime(minutes) = {
   let h = calc.trunc(minutes / 60)
-  let m = calc.trunc(calc.fract(minutes / 60) * 60)
+  let m = int(calc.round(calc.fract(minutes / 60) * 60))
   return datetime(hour: h, minute: m, second: 0)
 }
 
