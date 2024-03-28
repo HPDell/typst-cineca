@@ -48,10 +48,11 @@ jobs:
       - name: Copy files
         run: |
           cp -r -v \
-            template \
+            util \
             *.typ \
             README.md \
-            thumbnail.png \
+            example.png \
+            LICENSE \
             typst.toml \
             packages/packages/preview/${{ env.PACKAGE_NAME }}/${{ github.ref_name }}/
       - name: Commit and squash
