@@ -23,9 +23,9 @@ jobs:
       - name: Copy to preview packages
         run: |
           export PKG_VERSION=`toml get --toml-path typst.toml "package.version"`
-          export PKG_PREVIEW_HOME="~/.cache/typst/packages/preview/${{ env.PACKAGE_NAME }}/$PKG_VERSION/"
+          export PKG_PREVIEW_HOME="$HOME/.cache/typst/packages/preview/${{ env.PACKAGE_NAME }}/$PKG_VERSION/"
           mkdir -p $PKG_PREVIEW_HOME
-          cp -r * $PKG_PREVIEW_HOME
+          rsync -avP ./ $PKG_PREVIEW_HOME
       - name: Test build example
         run: typst compile example.typ
 
