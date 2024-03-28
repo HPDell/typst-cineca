@@ -1,0 +1,66 @@
+name: "Publish to Typst package"
+
+on:
+  push:
+    branches: [main]
+    tags: "*.*.*"
+
+env:
+  GIT_USER_EMAIL: huyg0180110559@outlook.com
+  GIT_USER_NAME: HPDell
+
+jobs:
+  build:
+    runs-on: ubunut-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Typst Build
+        uses: typst-community/setup-typst@v3
+      - name: Install toml-cli
+        run: pip install toml-cli
+      - name: Copy to preview packages
+        run: |
+          export PKG_VERSION=`toml get --toml-path typst.toml "package.version"`
+          export PKG_PREVIEW_HOME="~/.cache/typst/packages/preview/calendar/$PKG_VERSION/"
+          mkdir -p $PKG_PREVIEW_HOME
+          cp * $PKG_PREVIEW_HOME
+      - name: Test build example
+        run: typst compile example.typ
+
+  publish:
+    needs: [build]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Clone packages repo
+        run: git clone https://hpdell:${{ secrets.GH_TOKEN }}@github.com/HPDell/typst-packages.git packages
+      - name: Create branch and directory
+        working-directory: packages/packages/preview
+        run: |
+          git switch -c feat/calendar
+          mkdir -p calendar/${{ github.ref_name }}
+      - name: Copy files
+        run: |
+          cp -r -v \
+            template \
+            *.typ \
+            README.md \
+            thumbnail.png \
+            typst.toml \
+            packages/packages/preview/calendar/${{ github.ref_name }}/
+      - name: Commit and squash
+        working-directory: packages
+        run: |
+          git config --global user.email "${{ env.GIT_USER_EMAIL }}"
+          git config --global user.name "${{ env.GIT_USER_NAME }}"
+          git add -A
+          git commit -m "calendar:${{ github.ref_name }}"
+          git switch main
+          git merge feat/calendar
+          git branch -D feat/calendar
+          git push origin main
