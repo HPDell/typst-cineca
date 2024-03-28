@@ -8,6 +8,7 @@ on:
 env:
   GIT_USER_EMAIL: huyg0180110559@outlook.com
   GIT_USER_NAME: HPDell
+  PACKAGE_NAME: calendar
 
 jobs:
   build:
@@ -22,7 +23,7 @@ jobs:
       - name: Copy to preview packages
         run: |
           export PKG_VERSION=`toml get --toml-path typst.toml "package.version"`
-          export PKG_PREVIEW_HOME="~/.cache/typst/packages/preview/calendar/$PKG_VERSION/"
+          export PKG_PREVIEW_HOME="~/.cache/typst/packages/preview/${{ env.PACKAGE_NAME }}/$PKG_VERSION/"
           mkdir -p $PKG_PREVIEW_HOME
           cp * $PKG_PREVIEW_HOME
       - name: Test build example
@@ -42,8 +43,8 @@ jobs:
       - name: Create branch and directory
         working-directory: packages/packages/preview
         run: |
-          git switch -c feat/calendar
-          mkdir -p calendar/${{ github.ref_name }}
+          git switch -c feat/${{ env.PACKAGE_NAME }}
+          mkdir -p ${{ env.PACKAGE_NAME }}/${{ github.ref_name }}
       - name: Copy files
         run: |
           cp -r -v \
@@ -52,15 +53,15 @@ jobs:
             README.md \
             thumbnail.png \
             typst.toml \
-            packages/packages/preview/calendar/${{ github.ref_name }}/
+            packages/packages/preview/${{ env.PACKAGE_NAME }}/${{ github.ref_name }}/
       - name: Commit and squash
         working-directory: packages
         run: |
           git config --global user.email "${{ env.GIT_USER_EMAIL }}"
           git config --global user.name "${{ env.GIT_USER_NAME }}"
           git add -A
-          git commit -m "calendar:${{ github.ref_name }}"
+          git commit -m "${{ env.PACKAGE_NAME }}:${{ github.ref_name }}"
           git switch main
-          git merge feat/calendar
-          git branch -D feat/calendar
+          git merge feat/${{ env.PACKAGE_NAME }}
+          git branch -D feat/${{ env.PACKAGE_NAME }}
           git push origin main
