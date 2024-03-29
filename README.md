@@ -1,6 +1,6 @@
-# Calendar
+# CINECA: A Typst Package to Create Calendars
 
-A Typst package to create calendar with events.
+CINECA Is Not an Electric Calendar App, but a Typst package to create calendars with events.
 
 Example:
 

@@ -1,4 +1,4 @@
-#import "@preview/calendar:0.1.0": calendar, events-to-calendar-items
+#import "@preview/cineca:0.1.0": calendar, events-to-calendar-items
 
 #set page(margin: 0.5in)
 

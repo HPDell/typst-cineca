@@ -8,7 +8,7 @@ on:
 env:
   GIT_USER_EMAIL: huyg0180110559@outlook.com
   GIT_USER_NAME: HPDell
-  PACKAGE_NAME: calendar
+  PACKAGE_NAME: cineca
 
 jobs:
   build:
