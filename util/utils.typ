@@ -61,3 +61,95 @@
   show: pad.with(x: 2pt)
   move(dy: -4pt, time.display("[hour]:[minute]"))
 }
+
+#let get-month-days(month, year) = {
+  if month in (1,3,5,7,8,10,12) {
+    return 31
+  } else if month in (4,6,9,11) {
+    return 30
+  } else {
+    if calc.round(calc.fraction(year / 4)) = 0.0 and calc.round(calc.fraction(year / 400)) != 0.0 {
+      return 29
+    } else {
+      return 28
+    }
+  }
+}
+
+#let default-month-day(day, events) = {
+  set align(left + top)
+  show: block.with(inset: 2pt, clip: true)
+  stack(
+    dir: ttb,
+    spacing: 4pt,
+    day.display("[day]"),
+    ..events.map(((t, content)) => {
+      stack(
+        dir: ltr,
+        spacing: 2pt,
+        t.display("[hour]:[minute]"),
+        content
+      )
+    })
+  )
+}
+
+#let default-month-view(
+  events,
+  date-range,
+  sunday-first: false,
+  ..args
+) = {
+  let (date-from, date-to) = date-range
+  let dates = range(date-from.day(), date-to.day() + 1).map(it => datetime(
+    year: date-from.year(),
+    month: date-from.month(),
+    day: it
+  ))
+  let date-weekday = dates.map(it => calc.round(calc.fract((it.weekday() + int(sunday-first)) / 7) * 7)).map(i => int(i))
+  // [#date-weekday]
+  let nweek = dates.map(it => it.weekday()).filter(it => it == 1).len()
+  if date-from.weekday() > 1 {
+    nweek = nweek + 1
+  }
+  let week-day-map = ()
+  for (i, (d, w)) in dates.zip(date-weekday).enumerate() {
+    if i == 0 or w == 1 {
+      week-day-map.push(())
+    }
+    week-day-map.last().push((d, w))
+  }
+  let events-map = (:)
+  for e in events {
+    let key = e.at(0).display("[year]-[month]-[day]")
+    if (key not in events-map.keys()) {
+      events-map.insert(key, ())
+    }
+    events-map.at(key).push(e)
+  }
+  let header = week-day-map.at(1).map(((d, w)) => d.display("[weekday repr:short]"))
+  let title = date-from.display("[month repr:long]")
+  let body = grid(
+    columns: (1fr,) * 7,
+    rows: (2em,) * 2 + (4em,) * nweek,
+    stroke: 1pt,
+    align: center + horizon,
+    ..args,
+    grid.cell(colspan: 7, title),
+    ..header,
+    ..week-day-map.map(week => {
+      (
+        range(1, week.first().at(1)).map(it => []),
+        week.map(((day, w)) => {
+          let day-str = day.display("[year]-[month]-[day]")
+          if day-str in events-map.keys() {
+            default-month-day(day, events-map.at(day-str))
+          } else {
+            default-month-day(day, ())
+          }
+        })
+      ).join()
+    }).flatten()
+  )
+  body
+}

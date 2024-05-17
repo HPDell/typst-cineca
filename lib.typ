@@ -1,4 +1,4 @@
-#import "/util/utils.typ": minutes-to-datetime, events-to-calendar-items, default-header-style, default-item-style, default-time-style
+#import "/util/utils.typ": *
 
 // Make a calendar with events.
 #let calendar(
@@ -158,4 +158,23 @@
             }).flatten()
         )
     )
+}
+
+#let calendar-summary(
+  events,
+  template: (:),
+  sunday-first: false,
+  ..args
+) = {
+  events = events.sorted(key: ((x, _)) => int(x.display("[year][month][day][hour][minute][second]")))
+  let yearmonths = events.map(it => (it.at(0).year(), it.at(0).month())).dedup()
+  let event-group = events.map(it => it.at(0).display("[year]-[month]"))
+  for (year, month) in yearmonths {
+    let first-day = datetime(year: year, month: month, day: 1)
+    let group-id = first-day.display("[year]-[month]")
+    let days = get-month-days(month, year)
+    let day-range = (first-day, first-day + duration(days: days - 1))
+    let month-events = event-group.enumerate().filter(((i, it)) => it == group-id).map(((i, it)) => events.at(i))
+    default-month-view(month-events, day-range, sunday-first: sunday-first, ..args)
+  }
 }
