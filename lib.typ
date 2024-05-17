@@ -71,3 +71,91 @@
     }).flatten()
   )
 }
+
+// Make a month view of a calendar optionally with events
+#let calendar-month(
+    // Event list
+    event: (),
+    // Show (true) or hide (false) the title
+    show-title: true,
+    // Title above the month view --- if none and show-title is true display the range of dates
+    title: none,
+    // First day displayed in the month view
+    date-from: datetime.today(),
+    // Last day displayed in the month view
+    date-to: none,
+    ..args
+) = {
+    if date-to == none {
+        // If we have no date-to we show the rest of the month
+        for i in range(31) {
+            date-to = date-from + duration(days: i)
+            if date-to.month() != date-from.month() {
+                date-to = date-from + duration(days: i - 1)
+                break
+            }
+        }
+        // TODO(Discuss): Alternatively we could just display the next 31 days?
+        //date-to = date-from + duration(days: 31)
+    }
+    else {
+        // Check if date-from and date-to have been switched
+        if date-from > date-to {
+            let exchange = date-to
+            date-to = date-from
+            date-from = exchange
+        }
+    }
+    // Get all dates between date-from and date-to
+    let dates = ()
+    for i in range(calc.floor((date-to - date-from).days())+1) {
+        dates.push(date-from+duration(days: i))
+    }
+    // Get the weekdays of the dates
+    let nweek = dates.map(it => it.weekday()).filter(it => it == 1).len()
+    if date-from.weekday() > 1 {
+        nweek = nweek + 1
+    }
+    // Map the dates and weekdays
+    let week-day-map = ()
+    for (i, item) in dates.enumerate() {
+        if i == 0 or item.weekday() == 1 {
+            week-day-map.push(())
+        }
+        week-day-map.last().push(item)
+    }
+    stack(
+        dir: ttb,
+        grid(
+            columns: (1.5em,) * 7,
+            rows: (1.1em,) * (nweek + 1),
+            align: center + horizon,
+            ..args,
+            if show-title {
+                if title == none {
+                    grid.cell(colspan: 7)[#date-from.display() -- #date-to.display()]
+                }
+                else {
+                    grid.cell(colspan: 7)[#title]
+                }
+            },
+            [Mo], [Tu], [We], [Th], [Fr], [Sa], [Su],
+            ..week-day-map.map(week => {
+            (
+                range(1, week.first().weekday()).map(it => []),
+                week.map(day => {
+                    let day-str = day.display("[year]-[month]-[day]")
+                    if event.len()>0 and day-str in event.keys() {
+                        let params = event.at(day-str)
+                        let (shape, args) = params
+                        show: circle.with(..args)
+                        day.display("[day padding:none]")
+                    } else {
+                        day.display("[day padding:none]")
+                    }
+                })
+            ).join()
+            }).flatten()
+        )
+    )
+}
