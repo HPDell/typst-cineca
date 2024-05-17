@@ -94,10 +94,22 @@
   )
 }
 
+#let default-month-day-head(name) = {
+  name
+}
+
+#let default-month-head(content) = {
+  content
+}
+
 #let default-month-view(
   events,
   date-range,
+  month-head: none,
   sunday-first: false,
+  style-day-body: default-month-day,
+  style-day-head: default-month-day-head,
+  style-month-head: default-month-head,
   ..args
 ) = {
   let (date-from, date-to) = date-range
@@ -127,15 +139,15 @@
     }
     events-map.at(key).push(e)
   }
-  let header = week-day-map.at(1).map(((d, w)) => d.display("[weekday repr:short]"))
-  let title = date-from.display("[month repr:long]")
+  let header = week-day-map.at(1).map(((d, w)) => style-day-head(d.display("[weekday repr:short]")))
+  let title = if type(month-head) == content or type(month-head) == str { month-head } else { date-from.display("[month repr:long]") }
   let body = grid(
     columns: (1fr,) * 7,
     rows: (2em,) * 2 + (4em,) * nweek,
     stroke: 1pt,
     align: center + horizon,
     ..args,
-    grid.cell(colspan: 7, title),
+    grid.cell(colspan: 7, style-month-head(title)),
     ..header,
     ..week-day-map.map(week => {
       (
@@ -143,9 +155,9 @@
         week.map(((day, w)) => {
           let day-str = day.display("[year]-[month]-[day]")
           if day-str in events-map.keys() {
-            default-month-day(day, events-map.at(day-str))
+            style-day-body(day, events-map.at(day-str))
           } else {
-            default-month-day(day, ())
+            style-day-body(day, ())
           }
         })
       ).join()

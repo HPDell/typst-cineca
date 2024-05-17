@@ -167,6 +167,12 @@
   ..args
 ) = {
   events = events.sorted(key: ((x, _)) => int(x.display("[year][month][day][hour][minute][second]")))
+  let style = (
+    day-body: default-month-day,
+    day-head: default-month-day-head,
+    month-head: default-month-head,
+    ..template
+  )
   let yearmonths = events.map(it => (it.at(0).year(), it.at(0).month())).dedup()
   let event-group = events.map(it => it.at(0).display("[year]-[month]"))
   for (year, month) in yearmonths {
@@ -175,6 +181,14 @@
     let days = get-month-days(month, year)
     let day-range = (first-day, first-day + duration(days: days - 1))
     let month-events = event-group.enumerate().filter(((i, it)) => it == group-id).map(((i, it)) => events.at(i))
-    default-month-view(month-events, day-range, sunday-first: sunday-first, ..args)
+    default-month-view(
+      month-events,
+      day-range,
+      sunday-first: sunday-first,
+      style-day-body: style.at("day-body"),
+      style-day-head: style.at("day-head"),
+      style-month-head: style.at("month-head"),
+      ..args
+    )
   }
 }

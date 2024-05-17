@@ -12,7 +12,10 @@
 
 #calendar-month(
   events,
-  sunday-first: false
+  sunday-first: false,
+  template: (
+    month-head: (content) => strong(content)
+  )
 )
 
 #calendar-month(
