@@ -118,7 +118,7 @@
     month: date-from.month(),
     day: it
   ))
-  let date-weekday = dates.map(it => calc.round(calc.fract((it.weekday() + int(sunday-first)) / 7) * 7)).map(i => int(i))
+  let date-weekday = dates.map(it => it.weekday() + int(sunday-first)).map(i => if i > 7 { i - 7 } else { i })
   // [#date-weekday]
   let nweek = dates.map(it => it.weekday()).filter(it => it == 1).len()
   if date-from.weekday() > 1 {
@@ -164,4 +164,14 @@
     }).flatten()
   )
   body
+}
+
+#let default-day-summary(day, shape) = {
+  if type(shape) == array and type(shape.at(0)) == function {
+    let (pen, args) = shape
+    show: pen.with(..args)
+    day.display("[day padding:none]")
+  } else {
+    day.display("[day padding:none]")
+  }
 }
