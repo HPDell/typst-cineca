@@ -157,11 +157,12 @@
     day-body: default-month-day,
     day-head: default-month-day-head,
     month-head: default-month-head,
+    layout: stack,
     ..template
   )
   let yearmonths = events.map(it => (it.at(0).year(), it.at(0).month())).dedup()
   let event-group = events.map(it => it.at(0).display("[year]-[month]"))
-  for (year, month) in yearmonths {
+  let calendars = yearmonths.map(((year, month)) => {
     let first-day = datetime(year: year, month: month, day: 1)
     let group-id = first-day.display("[year]-[month]")
     let days = get-month-days(month, year)
@@ -176,5 +177,6 @@
       style-month-head: style.at("month-head"),
       ..args
     )
-  }
+  })
+  (style.layout)(..calendars)
 }
