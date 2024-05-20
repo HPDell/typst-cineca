@@ -2,11 +2,9 @@
 
 CINECA Is Not an Electric Calendar App, but a Typst package to create calendars with events.
 
-Example:
-
-![](./example.png)
-
 ## Usage
+
+### Day view
 
 `calendar(events, hour-range, minute-height, template, stroke)`
 
@@ -23,6 +21,74 @@ Parameters:
 - `stroke`: A stroke style to control the style of the default stroke, or a function taking two parameters `(x, y)` to control the stroke. The first row is the dates, and the first column is the times. Default: `none`.
 
 > Float-style time means a number representing 24-hour time. The integer part represents the hour. The fractional part represents the minute.
+
+Example:
+
+![](./example.png)
+
+### Month view
+
+`calendar-month(events, template, sunday-first, ..args)`
+
+- `events`: Event list. Each element is a two-element array.
+  - Day. A datetime object.
+  - Additional information for showing a day. It actually depends on the template `day-body`. For the deafult template, it requires a content.
+- `template`: Templates for headers, times, or events. It takes a dictionary of the following entries: `day-body`, `day-head`, `month-head`, and `layout`.
+- `sunday-first`: Whether to put sunday as the first day of a week.
+- `..args`: Additional arguments for the calendar's grid.
+
+Example:
+
+```typst
+#let events = (
+  (datetime(year: 2024, month: 5, day: 1, hour: 9, minute: 0, second: 0), [Lecture]),
+  (datetime(year: 2024, month: 5, day: 1, hour: 10, minute: 0, second: 0), [Tutorial]),
+  (datetime(year: 2024, month: 5, day: 2, hour: 10, minute: 0, second: 0), [Meeting]),
+  (datetime(year: 2024, month: 5, day: 10, hour: 12, minute: 0, second: 0), [Lunch]),
+  (datetime(year: 2024, month: 5, day: 25, hour: 8, minute: 0, second: 0), [Train]),
+)
+
+#calendar-month(
+  events,
+  sunday-first: false,
+  template: (
+    month-head: (content) => strong(content)
+  )
+)
+```
+
+### Month-summary view
+
+`calendar-month-summary(events, template, sunday-first, ..args)`
+
+- `events`: Event list. Each element is a two-element array.
+  - Day. A datetime object.
+  - Additional information for showing a day. It actually depends on the template `day-body`. For the deafult template, it requires an array of two elements.
+    - Shape. A function specify how to darw the shape, such as `circle`.
+    - Arguments. Further arguments for render a shape.
+- `template`: Templates for headers, times, or events. It takes a dictionary of the following entries: `day-body`, `day-head`, `month-head`, and `layout`.
+- `sunday-first`: Whether to put sunday as the first day of a week.
+- `..args`: Additional arguments for the calendar's grid.
+
+Example:
+
+```typst
+#let events = (
+  (datetime(year: 2024, month: 05, day: 21), (circle, (stroke: color.green, inset: 2pt))),
+  (datetime(year: 2024, month: 05, day: 22), (circle, (stroke: color.green, inset: 2pt))),
+  (datetime(year: 2024, month: 05, day: 27), (circle, (stroke: color.green, inset: 2pt))),
+  (datetime(year: 2024, month: 05, day: 28), (circle, (stroke: color.blue, inset: 2pt))),
+  (datetime(year: 2024, month: 05, day: 29), (circle, (stroke: color.blue, inset: 2pt))),
+  (datetime(year: 2024, month: 06, day: 03), (circle, (stroke: color.blue, inset: 2pt))),
+  (datetime(year: 2024, month: 06, day: 04), (circle, (stroke: color.yellow, inset: 2pt))),
+  (datetime(year: 2024, month: 06, day: 05), (circle, (stroke: color.yellow, inset: 2pt))),
+  (datetime(year: 2024, month: 06, day: 10), (circle, (stroke: color.red, inset: 2pt))),
+)
+
+#calendar-month-summary(
+  events: events
+)
+```
 
 ## Limitations
 

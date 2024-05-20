@@ -79,8 +79,8 @@
   //
   // - Day. A datetime object.
   // - Additional information for showing a day. It actually depends on the template `day-summary`. For the deafult template, it requires an array of two elements.
-  //   - Shape. A function specify how to 
-  //   - Arguments. Further arguments for render a shape
+  //   - Shape. A function specify how to darw the shape, such as `circle`.
+  //   - Arguments. Further arguments for render a shape.
   events: (),
   // Templates for headers, times, or events. It takes a dictionary of the following entries: `day-summary`, `day-head`, `month-head`, and `layout`.
   template: (:),
