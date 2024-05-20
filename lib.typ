@@ -73,7 +73,7 @@
 }
 
 // Make a month view of a calendar optionally with events
-#let calendar-summary(
+#let calendar-month-summary(
   // Event list
   event: (),
   // Show (true) or hide (false) the title
