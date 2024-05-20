@@ -74,10 +74,19 @@
 
 // Make a month view of a calendar optionally with events
 #let calendar-month-summary(
-  // Event list
+  // Event list.
+  // Each element is a two-element array:
+  //
+  // - Day. A datetime object.
+  // - Additional information for showing a day. It actually depends on the template `day-summary`. For the deafult template, it requires an array of two elements.
+  //   - Shape. A function specify how to 
+  //   - Arguments. Further arguments for render a shape
   events: (),
+  // Templates for headers, times, or events. It takes a dictionary of the following entries: `day-summary`, `day-head`, `month-head`, and `layout`.
   template: (:),
+  // Whether to put sunday as the first day of a week.
   sunday-first: false,
+  // Additional arguments for the calendar's grid.
   ..args
 ) = {
   let yearmonths = events.map(it => (it.at(0).year(), it.at(0).month())).dedup()
@@ -147,9 +156,17 @@
 }
 
 #let calendar-month(
+  // Event list.
+  // Each element is a two-element array:
+  //
+  // - Day. A datetime object.
+  // - Additional information for showing a day. It actually depends on the template `day-body`. For the deafult template, it requires a content.
   events,
+  // Templates for headers, times, or events. It takes a dictionary of the following entries: `day-body`, `day-head`, `month-head`, and `layout`.
   template: (:),
+  // Whether to put sunday as the first day of a week.
   sunday-first: false,
+  // Additional arguments for the calendar's grid.
   ..args
 ) = {
   events = events.sorted(key: ((x, _)) => int(x.display("[year][month][day][hour][minute][second]")))
