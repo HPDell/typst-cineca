@@ -1,6 +1,12 @@
 #import "@preview/cineca:0.1.0": *
 
 #calendar-month-summary(
+   date-from: datetime(year: 2024, month: 12, day: 24),
+   date-to: datetime(year: 2025, month: 1, day: 24),
+   stroke: 1pt,
+)
+
+#calendar-month-summary(
   event: (
     "2024-05-21": (circle, (stroke: color.green, inset: 2pt)),
     "2024-05-22": (circle, (stroke: color.green, inset: 2pt)),
