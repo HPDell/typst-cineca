@@ -1,6 +1,6 @@
 #import "@preview/cineca:0.1.0": calendar, events-to-calendar-items
 
-#set page(margin: 0.5in)
+#set page(margin: 0.5in, height: 15cm)
 
 #let events = (
   (1, 8.00, 10.00, [Lecture 1]),
@@ -13,4 +13,4 @@
   (2, 18.00, 20.00, [Dinner with friends]),
 )
 
-#calendar(events)
+#calendar(events, hour-range: (8, 14))

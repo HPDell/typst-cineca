@@ -24,7 +24,7 @@ Parameters:
 
 Example:
 
-![](./example.png)
+![](./test/day-view.png)
 
 ### Month view
 
@@ -57,6 +57,45 @@ Example:
 )
 ```
 
+```typst
+#let events2 = (
+  (datetime(year: 2024, month: 5, day: 1, hour: 9, minute: 0, second: 0), ([Lecture], blue)),
+  (datetime(year: 2024, month: 5, day: 1, hour: 10, minute: 0, second: 0), ([Tutorial], red)),
+  (datetime(year: 2024, month: 5, day: 1, hour: 11, minute: 0, second: 0), [Lab]),
+)
+
+#calendar-month(
+  events2,
+  sunday-first: true,
+  rows: (2em,) * 2 + (8em,),
+  template: (
+    day-body: (day, events) => {
+      show: block.with(width: 100%, height: 100%, inset: 2pt)
+      set align(left + top)
+      stack(
+        spacing: 2pt,
+        pad(bottom: 4pt, text(weight: "bold", day.display("[day]"))),
+        ..events.map(((d, e)) => {
+          let col = if type(e) == array and e.len() > 1 { e.at(1) } else { yellow }
+          show: block.with(
+            fill: col.lighten(40%),
+            stroke: col,
+            width: 100%,
+            inset: 2pt,
+            radius: 2pt
+          )
+          d.display("[hour]")
+          h(4pt)
+          if type(e) == array { e.at(0) } else { e }
+        })
+      )
+    }
+  )
+)
+```
+
+![](./test/month-view.png)
+
 ### Month-summary view
 
 `calendar-month-summary(events, template, sunday-first, ..args)`
@@ -88,7 +127,22 @@ Example:
 #calendar-month-summary(
   events: events
 )
+
+#calendar-month-summary(
+  events: events,
+  sunday-first: true
+)
+
+// An empty calendar
+#calendar-month-summary(
+  events: (
+    (datetime(year: 2024, month: 05, day: 21), (none,)),
+  ),
+  stroke: 1pt,
+)
 ```
+
+![](./test/month-summary.png)
 
 ## Limitations
 
