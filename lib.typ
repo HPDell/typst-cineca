@@ -76,16 +76,20 @@
 #let calendar-month-summary(
   // Event list
   events: (),
-  // Show (true) or hide (false) the title
-  show-title: true,
-  // Title above the month view --- if none and show-title is true display the range of dates
-  title: none,
+  template: (:),
   sunday-first: false,
   ..args
 ) = {
   let yearmonths = events.map(it => (it.at(0).year(), it.at(0).month())).dedup()
   let event-group = events.map(it => it.at(0).display("[year]-[month]"))
-  for (year, month) in yearmonths {
+  let style = (
+    day-summary: default-day-summary,
+    day-head: default-month-day-head,
+    month-head: default-month-head,
+    layout: stack.with(dir: ltr, spacing: 1em),
+    ..template
+  )
+  let calendars = yearmonths.map(((year, month)) => {
     // Get all dates between date-from and date-to
     let first-day = datetime(year: year, month: month, day: 1)
     let days = get-month-days(month, year)
@@ -116,20 +120,13 @@
       let key = e.at(0).display("[year]-[month]-[day]")
       events-map.insert(key, e.at(1))
     }
-    let header = week-day-map.at(1).map(((d, w)) => (d.display("[weekday repr:short]")))
+    let header = week-day-map.at(1).map(((d, w)) => (style.day-head)(d.display("[weekday repr:short]")))
     grid(
       columns: (2em,) * 7,
       rows: (1.1em,) * (nweek + 1),
       align: center + horizon,
       ..args,
-      if show-title {
-        if title == none {
-          grid.cell(colspan: 7)[#first-day.display() -- #last-day.display()]
-        }
-        else {
-          grid.cell(colspan: 7)[#title]
-        }
-      },
+      grid.cell(colspan: 7, (style.month-head)([#first-day.display() -- #last-day.display()])),
       ..header,
       ..week-day-map.map(week => {
       (
@@ -137,15 +134,16 @@
         week.map(((day, w)) => {
           let day-str = day.display("[year]-[month]-[day]")
           if day-str in events-map.keys() {
-            default-day-summary(day, events-map.at(day-str))
+            (style.day-summary)(day, events-map.at(day-str))
           } else {
-            default-day-summary(day, none)
+            (style.day-summary)(day, none)
           }
         })
       ).join()
       }).flatten()
     )
-  }
+  })
+  (style.layout)(..calendars)
 }
 
 #let calendar-month(
