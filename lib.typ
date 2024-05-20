@@ -73,7 +73,7 @@
 }
 
 // Make a month view of a calendar optionally with events
-#let calendar-month(
+#let calendar-summary(
     // Event list
     event: (),
     // Show (true) or hide (false) the title
@@ -160,7 +160,7 @@
     )
 }
 
-#let calendar-summary(
+#let calendar-month(
   events,
   template: (:),
   sunday-first: false,
