@@ -1,10 +1,13 @@
 #import "@preview/cineca:0.1.0": *
 
-// #calendar-month-summary(
-//    date-from: datetime(year: 2024, month: 12, day: 24),
-//    date-to: datetime(year: 2025, month: 1, day: 24),
-//    stroke: 1pt,
-// )
+// An empty calendar
+#calendar-month-summary(
+  events: (
+    (datetime(year: 2024, month: 05, day: 21), (none,)),
+  ),
+  stroke: 1pt,
+)
+
 #let events = (
   (datetime(year: 2024, month: 05, day: 21), (circle, (stroke: color.green, inset: 2pt))),
   (datetime(year: 2024, month: 05, day: 22), (circle, (stroke: color.green, inset: 2pt))),
