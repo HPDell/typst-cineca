@@ -28,7 +28,10 @@ jobs:
           mkdir -p $PKG_PREVIEW_HOME
           rsync -avP ./ $PKG_PREVIEW_HOME
       - name: Test build example
-        run: typst compile example.typ
+        run: |
+          typst compile day-view.typ
+          typst compile month-summary.typ
+          typst compile month-view.typ
 
   publish:
     needs: [build]
