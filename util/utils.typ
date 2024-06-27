@@ -68,7 +68,7 @@
   } else if month in (4,6,9,11) {
     return 30
   } else {
-    if calc.round(calc.fraction(year / 4)) = 0.0 and calc.round(calc.fraction(year / 400)) != 0.0 {
+    if (calc.fract(year / 4) == 0.0) and (calc.fract(year / 400) != 0.0) {
       return 29
     } else {
       return 28
