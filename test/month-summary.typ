@@ -1,10 +1,10 @@
 #import "@preview/cineca:0.2.0": *
 
-#set page(margin: 0.5in, height: 13cm, width: 14cm)
+#set page(paper: "a5", flipped: true)
 
 #let events = (
-  (datetime(year: 2024, month: 05, day: 21), (circle, (stroke: color.green, inset: 2pt))),
-  (datetime(year: 2024, month: 05, day: 22), (circle, (stroke: color.green, inset: 2pt))),
+  (datetime(year: 2024, month: 02, day: 21), (circle, (stroke: color.green, inset: 2pt))),
+  (datetime(year: 2024, month: 02, day: 22), (circle, (stroke: color.green, inset: 2pt))),
   (datetime(year: 2024, month: 05, day: 27), (circle, (stroke: color.green, inset: 2pt))),
   (datetime(year: 2024, month: 05, day: 28), (circle, (stroke: color.blue, inset: 2pt))),
   (datetime(year: 2024, month: 05, day: 29), (circle, (stroke: color.blue, inset: 2pt))),
