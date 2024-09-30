@@ -175,3 +175,57 @@
     day.display("[day padding:none]")
   }
 }
+
+#let ics(path) = {
+  let ics = read(path)
+  let lines = ics.split("\r\n")
+  let events = ()
+  for line in lines {
+    if line.starts-with("BEGIN:VEVENT") {
+      events.push((
+        summary: none,
+        location: none,
+        description: none,
+        dtstart: none,
+        dtend: none
+      ))
+    }
+    if events.len() == 0 {continue}
+    if line.starts-with("SUMMARY:") {
+      events.last().summary = line.slice("SUMMARY:".len()).trim()
+    }
+    else if line.starts-with("DESCRIPTION:") {
+      events.last().description = line.slice("DESCRIPTION:".len()).trim()
+    }
+    else if line.starts-with("LOCATION:") {
+      events.last().location = line.slice("LOCATION:".len()).trim()
+    }
+    else if line.starts-with("DTSTART") {
+      let datetext = line.split(":").at(1)
+      events.last().dtstart = datetime(..(
+        year:  int(datetext.slice(0,4)),
+        month: int(datetext.slice(4,6)),
+        day:   int(datetext.slice(6,8)),
+        ..if datetext.len() > 8 {(
+          hour:   int(datetext.slice(9,11)),
+          minute: int(datetext.slice(11,13)),
+          second: int(datetext.slice(13,15)),
+        )}
+      ))
+      }
+    else if line.starts-with("DTEND") {
+      let datetext = line.split(":").at(1)
+      events.last().dtend = datetime(..(
+        year:  int(datetext.slice(0,4)),
+        month: int(datetext.slice(4,6)),
+        day:   int(datetext.slice(6,8)),
+        ..if datetext.len() > 8 {(
+          hour:   int(datetext.slice(9,11)),
+          minute: int(datetext.slice(11,13)),
+          second: int(datetext.slice(13,15)),
+        )}
+      ))
+    }
+  }
+  return events
+}
