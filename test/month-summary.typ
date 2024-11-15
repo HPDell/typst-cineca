@@ -1,4 +1,4 @@
-#import "@preview/cineca:0.2.1": *
+#import "@preview/cineca:0.3.0": *
 
 #set page(paper: "a5", flipped: true)
 
