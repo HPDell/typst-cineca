@@ -4,6 +4,20 @@ CINECA Is Not an Electric Calendar App, but a Typst package to create calendars 
 
 ## Usage
 
+The package now support creating events from ICS files (thanks @Geronymos).
+To do so, read an ICS file and parse with `ics-parser()`.
+
+```typst
+#let events2 = ics-parser(read("sample.ics")).map(event => (
+  event.dtstart.weekday() - 4, 
+  event.dtstart.hour() + event.dtstart.minute() / 100,
+  event.dtend.hour()   + event.dtend.minute()   / 100,
+  event.summary
+))
+
+#calendar(events2, hour-range: (10, 14))
+```
+
 ### Day view
 
 `calendar(events, hour-range, minute-height, template, stroke)`

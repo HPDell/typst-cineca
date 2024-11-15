@@ -176,9 +176,8 @@
   }
 }
 
-#let ics(path) = {
-  let ics = read(path)
-  let lines = ics.split("\r\n")
+#let ics-parser(ics) = {
+  let lines = ics.split("\n")
   let events = ()
   for line in lines {
     if line.starts-with("BEGIN:VEVENT") {

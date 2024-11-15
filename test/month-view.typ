@@ -18,16 +18,25 @@
   )
 )
 
-#let events2 = (
-  (datetime(year: 2024, month: 5, day: 1, hour: 9, minute: 0, second: 0), ([Lecture], blue)),
-  (datetime(year: 2024, month: 5, day: 1, hour: 10, minute: 0, second: 0), ([Tutorial], red)),
-  (datetime(year: 2024, month: 5, day: 1, hour: 11, minute: 0, second: 0), [Lab]),
-)
+= ICS
+
+#let events2 = ics-parser(read("sample.ics")).map(event => (
+  // add time attributes if missing
+  datetime(
+    year: event.dtstart.year() + 1, 
+    month: event.dtstart.month(), 
+    day: event.dtstart.day(), 
+    hour: event.dtstart.hour(),
+    minute: event.dtstart.minute(),
+    second: 0
+  ),
+  event.summary
+))
 
 #calendar-month(
   events2,
   sunday-first: true,
-  rows: (2em,) * 2 + (8em,),
+  rows: (2em,) * 2 + (6.3em,),
   template: (
     day-body: (day, events) => {
       show: block.with(width: 100%, height: 100%, inset: 2pt)
