@@ -9,9 +9,9 @@ To do so, read an ICS file and parse with `ics-parser()`.
 
 ```typst
 #let events2 = ics-parser(read("sample.ics")).map(event => (
-  event.dtstart.weekday() - 4, 
-  event.dtstart.hour() + event.dtstart.minute() / 100,
-  event.dtend.hour()   + event.dtend.minute()   / 100,
+  event.dtstart, 
+  event.dtstart,
+  event.dtend,
   event.summary
 ))
 
@@ -25,16 +25,17 @@ To do so, read an ICS file and parse with `ics-parser()`.
 Parameters:
 
 - `events`: An array of events. Each item is a 4-element array:
-  - Index of day. Start from 0.
-  - Float-style start time.
-  - Float-style end time.
+  - Date. Can be `datetime()` or valid args of `day()`.
+  - Start time. Can be valid args of `time()`.
+  - End time. Can be valid args of `time()`.
   - Event body. Can be anything. Passed to the template.body to show more details.
 - `hour-range`: Then range of hours, affacting the range of the calendar. Default: `(8, 20)`.
 - `minute-height`: Height of per minute. Each minute occupys a row. This number is to control the height of each row. Default: `0.8pt`.
 - `template`: Templates for headers, times, or events. It takes a dictionary of the following entries: `header`, `time`, and `event`. Default: `(:)`.
 - `stroke`: A stroke style to control the style of the default stroke, or a function taking two parameters `(x, y)` to control the stroke. The first row is the dates, and the first column is the times. Default: `none`.
 
-> Float-style time means a number representing 24-hour time. The integer part represents the hour. The fractional part represents the minute.
+> [!NOTE]
+> See below for more details about the format of start time and end time.
 
 Example:
 
@@ -55,11 +56,11 @@ Example:
 
 ```typst
 #let events = (
-  (datetime(year: 2024, month: 2, day: 1, hour: 9, minute: 0, second: 0), [Lecture]),
-  (datetime(year: 2024, month: 2, day: 1, hour: 10, minute: 0, second: 0), [Tutorial]),
-  (datetime(year: 2024, month: 2, day: 2, hour: 10, minute: 0, second: 0), [Meeting]),
-  (datetime(year: 2024, month: 2, day: 10, hour: 12, minute: 0, second: 0), [Lunch]),
-  (datetime(year: 2024, month: 2, day: 25, hour: 8, minute: 0, second: 0), [Train]),
+  (daytime("2024-2-1", "9:0:0"), [Lecture]),
+  (daytime("2024-2-1", "10:0:0"), [Tutorial]),
+  (daytime("2024-2-2", "10:0:0"), [Meeting]),
+  (daytime("2024-2-10", "12:0:0"), [Lunch]),
+  (daytime("2024-2-25", "8:0:0"), [Train]),
 )
 
 #calendar-month(
@@ -127,15 +128,15 @@ Example:
 
 ```typst
 #let events = (
-  (datetime(year: 2024, month: 02, day: 21), (circle, (stroke: color.green, inset: 2pt))),
-  (datetime(year: 2024, month: 02, day: 22), (circle, (stroke: color.green, inset: 2pt))),
-  (datetime(year: 2024, month: 05, day: 27), (circle, (stroke: color.green, inset: 2pt))),
-  (datetime(year: 2024, month: 05, day: 28), (circle, (stroke: color.blue, inset: 2pt))),
-  (datetime(year: 2024, month: 05, day: 29), (circle, (stroke: color.blue, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 03), (circle, (stroke: color.blue, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 04), (circle, (stroke: color.yellow, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 05), (circle, (stroke: color.yellow, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 10), (circle, (stroke: color.red, inset: 2pt))),
+  (day("2024-02-21"), (circle, (stroke: color.green, inset: 2pt))),
+  (day("2024-02-22"), (circle, (stroke: color.green, inset: 2pt))),
+  (day("2024-05-27"), (circle, (stroke: color.green, inset: 2pt))),
+  (day("2024-05-28"), (circle, (stroke: color.blue, inset: 2pt))),
+  (day("2024-05-29"), (circle, (stroke: color.blue, inset: 2pt))),
+  (day("2024-06-03"), (circle, (stroke: color.blue, inset: 2pt))),
+  (day("2024-06-04"), (circle, (stroke: color.yellow, inset: 2pt))),
+  (day("2024-06-05"), (circle, (stroke: color.yellow, inset: 2pt))),
+  (day("2024-06-10"), (circle, (stroke: color.red, inset: 2pt))),
 )
 
 #calendar-month-summary(
@@ -157,6 +158,41 @@ Example:
 ```
 
 ![](./test/month-summary.png)
+
+## Day/Time/Daytime Format
+
+In addition to using `datetime()` to set up time, the package provided some other ways,
+supported by functions `day()`, `time()`, and `daytime()`.
+
+```typst
+- #time(8)
+- #time(8, 10)
+- #time(8, 10, 30)
+- #time("8.30")
+- #time(decimal("12.10"))
+- #time(14.10)            // 24-hour format
+- #time("8:10:08")
+
+- #day(2024)
+- #day(2024, 2)
+- #day(2024, 2, 5)    // year, month, day
+- #day("2024-3-7")    // ISO format (year-month-day)
+- #day("26/12/2024")  // British format (day/month/year)
+
+- #daytime(2024)
+- #daytime(2024, 2)
+- #daytime(2024, 2, 5)
+- #daytime(2024, 2, 5, 8)
+- #daytime(2024, 2, 5, 8, 10)
+- #daytime("2024-6-1", 8)
+- #daytime("2024-6-1", 8, 10)
+- #daytime("2024-6-1", 8, 10, 30)
+- #daytime(2024, "12:00")
+- #daytime(2024, 2, "12:00")
+- #daytime(2024, 2, 5, "12:00")
+- #daytime("2024-3-7", "11:30:45")
+- #daytime("2024-12-26 8:30")
+```
 
 ## Limitations
 
