@@ -3,15 +3,15 @@
 #set page(width: 20cm, height: 18cm, flipped: false, margin: 0.5in)
 
 #let events = (
-  (datetime(year: 2024, month: 02, day: 21), (circle, (stroke: color.green, inset: 2pt))),
-  (datetime(year: 2024, month: 02, day: 22), (circle, (stroke: color.green, inset: 2pt))),
-  (datetime(year: 2024, month: 05, day: 27), (circle, (stroke: color.green, inset: 2pt))),
-  (datetime(year: 2024, month: 05, day: 28), (circle, (stroke: color.blue, inset: 2pt))),
-  (datetime(year: 2024, month: 05, day: 29), (circle, (stroke: color.blue, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 03), (circle, (stroke: color.blue, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 04), (circle, (stroke: color.yellow, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 05), (circle, (stroke: color.yellow, inset: 2pt))),
-  (datetime(year: 2024, month: 06, day: 10), (circle, (stroke: color.red, inset: 2pt))),
+  (day("2024-02-21"), (circle, (stroke: color.green, inset: 2pt))),
+  (day("2024-02-22"), (circle, (stroke: color.green, inset: 2pt))),
+  (day("2024-05-27"), (circle, (stroke: color.green, inset: 2pt))),
+  (day("2024-05-28"), (circle, (stroke: color.blue, inset: 2pt))),
+  (day("2024-05-29"), (circle, (stroke: color.blue, inset: 2pt))),
+  (day("2024-06-03"), (circle, (stroke: color.blue, inset: 2pt))),
+  (day("2024-06-04"), (circle, (stroke: color.yellow, inset: 2pt))),
+  (day("2024-06-05"), (circle, (stroke: color.yellow, inset: 2pt))),
+  (day("2024-06-10"), (circle, (stroke: color.red, inset: 2pt))),
 )
 
 #calendar-month-summary(
@@ -35,13 +35,7 @@
 
 #let events2 = ics-parser(read("sample.ics")).map(event => (
   // add time attributes if missing
-  datetime(
-    year: event.dtstart.year() + 1, 
-    month: event.dtstart.month(), 
-    day: event.dtstart.day(), 
-    hour: 0, minute: 0, second: 0
-  ),
-  (circle, (stroke: color.blue))
+  event.dtstart, (circle, (stroke: color.blue))
 ))
 
 #calendar-month-summary(

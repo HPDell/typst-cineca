@@ -3,11 +3,11 @@
 #set page(margin: 0.5in)
 
 #let events = (
-  (datetime(year: 2024, month: 2, day: 1, hour: 9, minute: 0, second: 0), [Lecture]),
-  (datetime(year: 2024, month: 2, day: 1, hour: 10, minute: 0, second: 0), [Tutorial]),
-  (datetime(year: 2024, month: 2, day: 2, hour: 10, minute: 0, second: 0), [Meeting]),
-  (datetime(year: 2024, month: 2, day: 10, hour: 12, minute: 0, second: 0), [Lunch]),
-  (datetime(year: 2024, month: 2, day: 25, hour: 8, minute: 0, second: 0), [Train]),
+  (daytime("2024-2-1", "9:0:0"), [Lecture]),
+  (daytime("2024-2-1", "10:0:0"), [Tutorial]),
+  (daytime("2024-2-2", "10:0:0"), [Meeting]),
+  (daytime("2024-2-10", "12:0:0"), [Lunch]),
+  (daytime("2024-2-25", "8:0:0"), [Train]),
 )
 
 #calendar-month(
