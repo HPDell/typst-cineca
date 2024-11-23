@@ -19,10 +19,12 @@
   // Templates for headers, times, or events. It takes a dictionary of the following entries: `header`, `time`, and `event`.
   template: (:),
   // A stroke style to control the style of the default stroke, or a function taking two parameters `(x, y)` to control the stroke. The first row is the dates, and the first column is the times.
-  stroke: none
+  stroke: none,
+  datetime-format: "[year]-[month]-[day]"
 ) = {
   let items = events-to-calendar-items(events, hour-range.at(0))
-  let days = items.keys().len()
+  let day-list = items.keys()
+  let days = day-list.len()
   let hours = hour-range.at(1) - hour-range.at(0)
   let style = (
     header: default-header-style,
@@ -41,7 +43,7 @@
     rows: (auto, ) + (minute-height,) * hours * 60 + (8pt,),
     fill: white,
     stroke: stroke-rule,
-    [], ..array.range(days).map(d => (style.header)(d)),
+    [], ..day-list.map(i => day(i)).map(d => (style.header)(d.display(datetime-format))),
     ..array.range(hours * 60 + 1).map(y => {
       array.range(days + 1).map(x => {
         if x == 0 {
@@ -51,20 +53,18 @@
             (style.time)(t)
           } else []
         } else {
-          if items.keys().contains(str(x)) {
-            if items.at(str(x)).keys().contains(str(y)) {
-              let (last, body) = items.at(str(x)).at(str(y))
-              show: block.with(inset: (x: 2pt, y: 0pt), width: 100%)
-              place({
-                block(
-                  width: 100%, 
-                  height: (last) * minute-height,
-                  {
-                    (style.event)(..(minutes-to-datetime(y + minutes-offset), body))
-                  }
-                )
-              })
-            }
+          if items.at(day-list.at(x - 1)).keys().contains(str(y)) {
+            let (last, body) = items.at(day-list.at(x - 1)).at(str(y))
+            show: block.with(inset: (x: 2pt, y: 0pt), width: 100%)
+            place({
+              block(
+                width: 100%, 
+                height: (last) * minute-height,
+                {
+                  (style.event)(..(minutes-to-datetime(y + minutes-offset), body))
+                }
+              )
+            })
           }
         }
       })

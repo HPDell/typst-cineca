@@ -1,3 +1,5 @@
+#import "/util/parser.typ": *
+
 #let minutes-to-datetime(minutes) = {
   let h = calc.trunc(minutes / 60)
   let m = int(calc.round(calc.fract(minutes / 60) * 60))
@@ -5,20 +7,19 @@
 }
 
 #let events-to-calendar-items(events, start) = {
-  let dict = (:)
+  let days = events.map(i => i.at(0)).dedup().map(i => if type(i) == datetime { i } else { day(..(i,).flatten()) })
+  let dict = days.map(i => (i.display("[year]-[month]-[day]"), (:))).to-dict()
   for value in events {
-    if value.len() < 4 {
+    if value.len() < 3 {
       continue
     }
-    let kday = str(value.at(0))
-    let stime = float(value.at(1))
-    let etime = float(value.at(2))
-    let body = value.at(3)
-    if not dict.keys().contains(kday) {
-      dict.insert(kday, (:))
-    }
-    let istart = calc.min((calc.trunc(stime) - start), 24) * 60 + calc.min(calc.round(calc.fract(stime) * 100), 60)
-    let iend = calc.min((calc.trunc(etime) - start), 24) * 60 + calc.min(calc.round(calc.fract(etime) * 100), 60)
+    let dv = if type(value.at(0)) == datetime { value.at(0) } else { day(..(value.at(0),).flatten()) }
+    let kday = dv.display("[year]-[month]-[day]")
+    let stime = if type(value.at(1)) == datetime { value.at(1) } else if type(value.at(1)) == array { time(..value.at(1)) } else { time(value.at(1)) }
+    let etime = if type(value.at(2)) == datetime { value.at(2) } else if type(value.at(2)) == array { time(..value.at(2)) } else { time(value.at(2)) }
+    let body = if value.len() > 3 { value.at(3) } else { none }
+    let istart = calc.min((stime.hour() - start), 24) * 60 + calc.min(stime.minute(), 60)
+    let iend = calc.min((etime.hour() - start), 24) * 60 + calc.min(etime.minute(), 60)
     let ilast = iend - istart
     if ilast > 0 {
       dict.at(kday).insert(str(istart), (ilast, body))
@@ -31,7 +32,7 @@
   show: pad.with(y: 8pt)
   set align(center + horizon)
   set text(weight: "bold")
-  [Day #{day+1}]
+  [#{day}]
 }
 
 #let default-item-style(time, body) = {
