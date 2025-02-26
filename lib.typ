@@ -19,7 +19,7 @@
   // Templates for headers, times, or events. It takes a dictionary of the following entries: `header`, `time`, and `event`.
   template: (:),
   // A stroke style to control the style of the default stroke, or a function taking two parameters `(x, y)` to control the stroke. The first row is the dates, and the first column is the times.
-  stroke: none,
+  line-style: none,
   datetime-format: "[year]-[month]-[day]"
 ) = {
   let items = events-to-calendar-items(events, hour-range.at(0))
@@ -33,8 +33,8 @@
     ..template
   )
   let minutes-offset = hour-range.at(0) * 60
-  let stroke-shape = if type(stroke) == "stroke" { stroke } else { 0.1pt + black }
-  let stroke-rule = if type(stroke) == "function" { stroke } else { (x, y) => (
+  let stroke-shape = if type(line-style) == stroke { line-style } else { 0.1pt + black }
+  let stroke-rule = if type(line-style) == function { line-style } else { (x, y) => (
     right: if y < (hours * 60 + 1) { stroke-shape } else { 0pt },
     top: if x > 0 { if y < 1 { stroke-shape } else if calc.fract((y - 1) / 60) == 0 { stroke-shape } else { 0pt } }
   ) }
