@@ -1,4 +1,4 @@
-#import "@preview/cineca:0.4.0": calendar, events-to-calendar-items, ics-parser
+#import "@preview/cineca:0.5.0": calendar, events-to-calendar-items, ics-parser
 
 #set page(margin: 0.5in, height: 25cm)
 

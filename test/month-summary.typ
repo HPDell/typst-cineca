@@ -1,4 +1,4 @@
-#import "@preview/cineca:0.4.0": *
+#import "@preview/cineca:0.5.0": *
 
 #set page(width: 20cm, height: 18cm, flipped: false, margin: 0.5in)
 
