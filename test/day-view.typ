@@ -7,11 +7,12 @@
   ("2024-1-1", "10:15", "11:10", [Tutorial]),
   ("2024-1-1", (11, 35), (12, 35), [Shopping]),
   ("2024-1-1", 13.55, 15.00, [Lecture 2]),
+  ("2024-1-2", 7.00, 9.00, [Lecture 2]),
   ("2024-1-2", 9.30, 11.30, [Lecture 2]),
-  ("2024-1-2", 13.45, 14.30, [Tutorial]),
+  ("2024-1-2", 13.45, 15.20, [Tutorial]),
 )
 
-#calendar(events, hour-range: (8, 15), datetime-format: "[day]/[month]/[year]")
+#calendar(events, hour-range: (8, 15), date-format: "[day]/[month]/[year]")
 
 = ICS
 
