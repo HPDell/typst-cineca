@@ -23,7 +23,7 @@
   date-format: "[year]-[month]-[day]",
   time-format: "[hour]:[minute]"
 ) = {
-  let items = events-to-calendar-items(events, hour-range.at(0))
+  let items = events-to-calendar-items(events, hour-range)
   let day-list = items.keys()
   let days = day-list.len()
   let hours = hour-range.at(1) - hour-range.at(0)
