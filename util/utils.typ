@@ -18,11 +18,11 @@
     let stime = if type(value.at(1)) == datetime { value.at(1) } else if type(value.at(1)) == array { time(..value.at(1)) } else { time(value.at(1)) }
     let etime = if type(value.at(2)) == datetime { value.at(2) } else if type(value.at(2)) == array { time(..value.at(2)) } else { time(value.at(2)) }
     let body = if value.len() > 3 { value.at(3) } else { none }
-    let istart = calc.min((stime.hour() - start), 24) * 60 + calc.min(stime.minute(), 60)
-    let iend = calc.min((etime.hour() - start), 24) * 60 + calc.min(etime.minute(), 60)
+    let istart = calc.clamp((stime.hour() - start), 0, 24) * 60 + calc.min(stime.minute(), 60)
+    let iend = calc.clamp((etime.hour() - start), 0, 24) * 60 + calc.min(etime.minute(), 60)
     let ilast = iend - istart
     if ilast > 0 {
-      dict.at(kday).insert(str(istart), (ilast, body))
+      dict.at(kday).insert(str(istart), (ilast, (stime, etime, ..value.slice(3,))))
     }
   }
   dict
@@ -35,7 +35,7 @@
   [#{day}]
 }
 
-#let default-item-style(time, body) = {
+#let default-item-style(event, time-format) = {
   show: block.with(
     fill: white,
     height: 100%,
@@ -51,10 +51,10 @@
   set par(leading: 4pt)
   if time != none {
     terms(
-      terms.item(time.display("[hour]:[minute]"), body)
+      terms.item(event.at(0).display(time-format), event.last())
     )
   } else {
-    body
+    event.last()
   }
 }
 

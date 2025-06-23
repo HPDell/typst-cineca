@@ -20,7 +20,8 @@
   template: (:),
   // A stroke style to control the style of the default stroke, or a function taking two parameters `(x, y)` to control the stroke. The first row is the dates, and the first column is the times.
   line-style: none,
-  datetime-format: "[year]-[month]-[day]"
+  date-format: "[year]-[month]-[day]",
+  time-format: "[hour]:[minute]"
 ) = {
   let items = events-to-calendar-items(events, hour-range.at(0))
   let day-list = items.keys()
@@ -43,7 +44,7 @@
     rows: (auto, ) + (minute-height,) * hours * 60 + (8pt,),
     fill: white,
     stroke: stroke-rule,
-    [], ..day-list.map(i => day(i)).map(d => (style.header)(d.display(datetime-format))),
+    [], ..day-list.map(i => day(i)).map(d => (style.header)(d.display(date-format))),
     ..array.range(hours * 60 + 1).map(y => {
       array.range(days + 1).map(x => {
         if x == 0 {
@@ -54,14 +55,14 @@
           } else []
         } else {
           if items.at(day-list.at(x - 1)).keys().contains(str(y)) {
-            let (last, body) = items.at(day-list.at(x - 1)).at(str(y))
+            let (last, event) = items.at(day-list.at(x - 1)).at(str(y))
             show: block.with(inset: (x: 2pt, y: 0pt), width: 100%)
             place({
               block(
                 width: 100%, 
                 height: (last) * minute-height,
                 {
-                  (style.event)(..(minutes-to-datetime(y + minutes-offset), body))
+                  (style.event)(..(event, time-format))
                 }
               )
             })
